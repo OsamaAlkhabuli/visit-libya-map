@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function fetchAnswer(question) {
-    fetch("https://visitlibya-chatbot-server.onrender.com/ask", {
+    fetch("https://bot-visitlibya.onrender.com/ask", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
