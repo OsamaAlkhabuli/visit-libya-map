@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   chatBox.innerHTML = `
     <div id="chat-header">روبوت Visit Libya 🤖 <span id="chat-close">×</span></div>
     <div id="chat-messages"></div>
-    <input type="text" id="chat-input" placeholder=" مرحبا بك في ليبيا مهد الحضارات وموطن السحر والجمال" />
+    <input type="text" id="chat-input" placeholder="اسألني عن السياحة في ليبيا..." />
   `;
   document.body.appendChild(chatBox);
 
