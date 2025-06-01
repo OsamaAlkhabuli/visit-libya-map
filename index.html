@@ -1,148 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
   <title>منصة Visit Libya</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: 'Tahoma', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      direction: rtl;
-    }
-
-    header {
-      background-color: #009fae;
-      color: white;
-      text-align: center;
-      padding: 20px 10px;
-    }
-
-    header .logo {
-      height: 80px;
-      margin-bottom: 10px;
-    }
-
-    main {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .nav-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .nav-card {
-      display: block;
-      background-color: #e8b15d;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-size: 18px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
-
-    .nav-card:hover {
-      transform: scale(1.05);
-    }
-
-    footer {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      margin-top: 40px;
-      font-size: 14px;
-    }
-
-    /* البوت */
-    #chat-toggle {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: #009fae;
-      color: white;
-      font-size: 24px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 48px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      z-index: 9999;
-    }
-
-    #chat-box {
-      position: fixed;
-      bottom: 80px;
-      left: 20px;
-      width: 300px;
-      max-height: 400px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      display: none;
-      flex-direction: column;
-      z-index: 9999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      overflow: hidden;
-    }
-    #chat-box.open { display: flex; }
-
-    #chat-header {
-      background: #009fae;
-      color: white;
-      padding: 10px;
-      font-weight: bold;
-      position: relative;
-    }
-    #chat-close {
-      position: absolute;
-      top: 5px;
-      left: 10px;
-      cursor: pointer;
-    }
-
-    #chat-messages {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-    #chat-input {
-      border: none;
-      border-top: 1px solid #ccc;
-      padding: 10px;
-      font-size: 14px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .message {
-      margin-bottom: 10px;
-      padding: 8px;
-      border-radius: 6px;
-      max-width: 90%;
-    }
-    .message.user {
-      background: #e8b15d;
-      color: white;
-      align-self: flex-end;
-    }
-    .message.bot {
-      background: #f2f2f2;
-      align-self: flex-start;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="chatbot.css">
 </head>
 <body>
   <header>
@@ -168,80 +32,11 @@
   <!-- بوت الدردشة -->
   <div id="chat-toggle">💬</div>
   <div id="chat-box">
-    <div id="chat-header">روبوت Visit Libya 🤖 <span id="chat-close">×</span></div>
+    <div id="chat-header">🤖 روبوت Visit Libya <span id="chat-close">×</span></div>
     <div id="chat-messages"></div>
-    <input type="text" id="chat-input" placeholder="اسألني عن السياحة في ليبيا..." />
+    <input type="text" id="chat-input" placeholder="أسال عن ليبيا أرض الحضارات وموطن السحر والجمال..." />
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggleBtn = document.getElementById("chat-toggle");
-      const closeBtn = document.getElementById("chat-close");
-      const chatInput = document.getElementById("chat-input");
-      const chatMessages = document.getElementById("chat-messages");
-      const chatBox = document.getElementById("chat-box");
-
-      toggleBtn.onclick = () => chatBox.classList.toggle("open");
-      closeBtn.onclick = () => chatBox.classList.remove("open");
-
-      let knowledge = {};
-      fetch("https://raw.githubusercontent.com/OsamaAlkhabuli/visit-libya-map/data/visitlibya_textual_content_updated.json")
-        .then(res => res.json())
-        .then(data => {
-          knowledge = data;
-        });
-
-      chatInput.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-          const question = chatInput.value.trim();
-          if (!question) return;
-
-          addMessage("user", question);
-          chatInput.value = "";
-          respondTo(question);
-        }
-      });
-
-      function respondTo(question) {
-        const lower = question.toLowerCase();
-        let found = false;
-
-        for (const key in knowledge) {
-          const section = knowledge[key];
-          if (typeof section === "object") {
-            if (section.description && question.includes(key)) {
-              addMessage("bot", section.description);
-              found = true;
-              break;
-            } else if (Array.isArray(section)) {
-              addMessage("bot", `🔎 يوجد ${section.length} عنصرًا في قسم ${key}`);
-              found = true;
-              break;
-            } else {
-              for (const subKey in section) {
-                if (question.includes(subKey)) {
-                  addMessage("bot", section[subKey].description || `معلومة عن ${subKey}`);
-                  found = true;
-                  break;
-                }
-              }
-            }
-          }
-        }
-
-        if (!found) {
-          addMessage("bot", "❓ عذرًا، لم أفهم سؤالك. جرّب كلمات مثل 'طرابلس' أو 'الفنادق' أو 'الصحراء'");
-        }
-      }
-
-      function addMessage(sender, text) {
-        const msg = document.createElement("div");
-        msg.className = "message " + sender;
-        msg.innerText = text;
-        chatMessages.appendChild(msg);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    });
-  </script>
+  <script src="chatbot.js"></script>
 </body>
 </html>
