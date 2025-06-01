@@ -1,0 +1,33 @@
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("https://raw.githubusercontent.com/OsamaAlkhabuli/visit-libya-map/data/%D8%A7%D9%84%D8%A5%D9%8A%D9%88%D8%A7%D8%A1_%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%AD%D9%8A.json")
+    .then(res => res.json())
+    .then(data => {
+      const section = data["hotels"];
+      const container = document.getElementById("hotels-container");
+
+      if (Array.isArray(section)) {
+        section.forEach(item => {
+          const div = document.createElement("div");
+          div.style.background = "#fff";
+          div.style.border = "1px solid #ccc";
+          div.style.padding = "15px";
+          div.style.marginBottom = "10px";
+          div.style.borderRadius = "6px";
+          div.innerHTML = `<p>${JSON.stringify(item)}</p>`;
+          container.appendChild(div);
+        });
+      } else {
+        const div = document.createElement("div");
+        div.style.background = "#fff";
+        div.style.border = "1px solid #ccc";
+        div.style.padding = "15px";
+        div.style.borderRadius = "6px";
+        div.innerHTML = `<pre>${JSON.stringify(section, null, 2)}</pre>`;
+        container.appendChild(div);
+      }
+    })
+    .catch(err => {
+      document.getElementById("hotels-container").innerHTML = "<p>تعذر تحميل البيانات.</p>";
+    });
+});
